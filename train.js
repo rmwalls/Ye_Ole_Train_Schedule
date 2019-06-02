@@ -1,3 +1,15 @@
+//set up firebase
+//get and save input data from form
+//do math
+// save more variable
+//create object
+//send object to database
+//clear form
+//get data back from database
+//store the variables (to match the table)
+// create new row
+//append to table
+
 // Firebase configuration
 var firebaseConfig = {
   apiKey: "AIzaSyC1nm-kayGNOY8Ctu-9YWiHP71mhXFD3v0",
@@ -22,10 +34,6 @@ var currentTime = moment().format('LT');
 //add current local time to jumbotron
 $("#jumbo").append("<br> Local Time is " + currentTime);
 
-database.ref().on("value", function (snapshot) {
-  snapshot = snapshot.val()
-  console.log(snapshot)
-})
 
 //Button for adding new train schedule
 $("#add-train-btn").on("click", function(event) {
@@ -59,6 +67,31 @@ $("#add-train-btn").on("click", function(event) {
     console.log("newTrain has this: " + newTrain.name + newTrain.dest + newTrain.trainNext);
     database.ref().push(newTrain);  //send the train to the database
 
+    //Clear form next entry
+    document.getElementById("form").reset();
+   
+    //get data back from database
+    database.ref().on("child_added", function(childSnapshot) { //get existing data from database
+    console.log(childSnapshot.val());
+    // If Firebase has data, update our client-side variables
+    //if (childSnapshot.val().exists()) {
+    trainName = childSnapshot.val().name;
+    trainDestination = childSnapshot.val().dest;
+      
+    console.log(trainName);
+    console.log(trainDestination);
+  
+    // Store from database back into variables.
+    var trainName = childSnapshot.val().name;
+    var trainDestination = childSnapshot.val().dest;
+    var trainFirstTime = childSnapshot.val().ftime;
+    var trainFrequency = childSnapshot.val().frequency;
+    var trainNext = childSnapshot.val().trainNext;
+    var trainMinutesAway = childSnapshot.val().trainMinutesAway;
+  
+    });
+ 
+
     // Create the new table row
     var newRow = $("<tr>").append(
       $("<td>").text(trainName),
@@ -71,22 +104,7 @@ $("#add-train-btn").on("click", function(event) {
     // Append the new row to the table
     $("#schedule-table > tbody").append(newRow);
     
-    //Clear form next entry
-    document.getElementById("form").reset();
     
 }); // end add schedule 
-
-/* database.ref().on("child_added", function(childSnapshot) { //get existing data from database
-var childSnapshot = childSnapshot.val();
-  console.log(childSnapshot.val());
-// Store from database back into variables.
-var trainName = childSnapshot.val().name;
-var trainDestination = childSnapshot.val().dest;
-var trainFirstTime = childSnapshot.val().ftime;
-var trainFrequency = childSnapshot.val().frequency;
-var trainNext = childSnapshot.val().trainNext;
-var trainMinutesAway = childSnapshot.val().trainMinutesAway;
-});
-*/
 
 console.log("the current time is " + currentTime);
