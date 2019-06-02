@@ -1,4 +1,4 @@
-// My web app's Firebase configuration
+// Firebase configuration
 var firebaseConfig = {
   apiKey: "AIzaSyC1nm-kayGNOY8Ctu-9YWiHP71mhXFD3v0",
   authDomain: "week7-3-4e033.firebaseapp.com",
@@ -18,20 +18,14 @@ var trainDestination;
 var trainFirstTime;
 var trainFrequency;
 var currentTime = moment().format('LT');
-console.log(currentTime);
-$(".card-header").append(" Local Time is " + currentTime);
 
-//data in the database?
-//var childSnapshot;
-//database.ref().on("child_added", function(childSnapshot) { //get existing data from database
-//console.log("this is childSnapshot.val " + childSnapshot.val());
-//});
-// Store from database back into variables.
-//trainName = childSnapshot.name;
-//trainDestination = childSnapshot.val().dest;
-//trainFirstTime = childSnapshot.val().ftime;
-//trainFrequency = childSnapshot.val().frequency;
+//add current local time to jumbotron
+$("#jumbo").append("<br> Local Time is " + currentTime);
 
+database.ref().on("value", function (snapshot) {
+  snapshot = snapshot.val()
+  console.log(snapshot)
+})
 
 //Button for adding new train schedule
 $("#add-train-btn").on("click", function(event) {
@@ -44,12 +38,12 @@ $("#add-train-btn").on("click", function(event) {
   trainFrequency = $("#frequency-input").val().trim();
 
   //time calculations
-var firstTime = trainFirstTime;
-var firstTimeConverted = moment(firstTime, "HH:mm").subtract(1, "years");
-var diffTime = moment().diff(moment(firstTimeConverted), "minutes"); // Difference between the times
-var tRemainder = diffTime % trainFrequency; // Time apart (remainder)
-var trainMinutesAway = trainFrequency - tRemainder; // Minutes until next train
-var trainNext = moment().add(trainMinutesAway, "minutes").format("hh:mm a"); // time of next train
+  var firstTime = trainFirstTime;
+  var firstTimeConverted = moment(firstTime, "HH:mm").subtract(1, "years");
+  var diffTime = moment().diff(moment(firstTimeConverted), "minutes"); // Difference between the times
+  var tRemainder = diffTime % trainFrequency; // Time apart (remainder)
+  var trainMinutesAway = trainFrequency - tRemainder; // Minutes until next train
+  var trainNext = moment().add(trainMinutesAway, "minutes").format("hh:mm a"); // time of next train
 
   // Creating local "temporary" object for holding train data (to send to database)
   var newTrain = {
@@ -77,21 +71,22 @@ var trainNext = moment().add(trainMinutesAway, "minutes").format("hh:mm a"); // 
     // Append the new row to the table
     $("#schedule-table > tbody").append(newRow);
     
-
     //Clear form next entry
-    //formClear();
+    document.getElementById("form").reset();
     
 }); // end add schedule 
 
-//Create Firebase event for adding train to the database and a row in the html when a user adds an entry
-
-//database.ref().on("child_added", function(childSnapshot) { //get existing data from database
-//console.log(childSnapshot.val());
-//};
+/* database.ref().on("child_added", function(childSnapshot) { //get existing data from database
+var childSnapshot = childSnapshot.val();
+  console.log(childSnapshot.val());
 // Store from database back into variables.
-//var trainName = childSnapshot.val().name;
-//var trainDestination = childSnapshot.val().dest;
-//var trainFirstTime = childSnapshot.val().ftime;
-//var trainFrequency = childSnapshot.val().frequency;
+var trainName = childSnapshot.val().name;
+var trainDestination = childSnapshot.val().dest;
+var trainFirstTime = childSnapshot.val().ftime;
+var trainFrequency = childSnapshot.val().frequency;
+var trainNext = childSnapshot.val().trainNext;
+var trainMinutesAway = childSnapshot.val().trainMinutesAway;
+});
+*/
 
 console.log("the current time is " + currentTime);
