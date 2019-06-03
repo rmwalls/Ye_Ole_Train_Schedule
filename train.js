@@ -57,10 +57,10 @@ $("#add-train-btn").on("click", function(event) {
   }
 
   database.ref().push(newTrain);  //send the new train to the database
-}); //end database call
+
 //Clear form for next entry
 document.getElementById("form").reset();
-   
+}); //end database call   
 //get data back from database
 database.ref().on("child_added", function(childSnapshot) { //get existing data from database
   console.log(childSnapshot.val());
