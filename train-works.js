@@ -22,6 +22,11 @@ var currentTime = moment().format('LT');
 //add current local time to jumbotron
 $("#jumbo").append("<br> Local Time is " + currentTime);
 
+//var query = database.ref().on('value', function(DataSnapshot){ 
+//trainName = DataSnapshot.val().name;
+//console.log("train name is " + trainName);})
+
+
 //Button for adding new train schedule
 $("#add-train-btn").on("click", function(event) {
   event.preventDefault();
@@ -55,14 +60,15 @@ $("#add-train-btn").on("click", function(event) {
 
 //Clear form for next entry
 document.getElementById("form").reset();
-}); //end database call  
- 
+}); //end database call   
 //get data back from database
 database.ref().on("child_added", function(childSnapshot) { //get existing data from database
   console.log(childSnapshot.val());
-  var trainKey = childSnapshot.val().dateAdded;
-  console.log("train key = " + trainKey);
-  
+  trainName = childSnapshot.val().name;
+  trainDestination = childSnapshot.val().dest;
+      
+  console.log(trainName);
+  console.log(trainDestination);  
 
   // Store from database back into variables.
   trainName = childSnapshot.val().name;
@@ -72,17 +78,7 @@ database.ref().on("child_added", function(childSnapshot) { //get existing data f
   var trainNext = childSnapshot.val().trainNext;
   var trainMinutesAway = childSnapshot.val().trainMinutesAway;
 
-  var deleteButton = "<button type='button'" + 
-		   "onclick='trainDelete(this);' " + 
-		   "class='btn btn-delete'>" +  
-	           "<span class='glyphicon glyphicon-remove' aria-label='Delete'>" +
-        	   "</button>"
  
-function trainDelete() {
-  $(this).parents("tr").remove();
-  database.ref(trainKey).remove();
-}
-
 // Create the new table row
 var newRow = $("<tr>").append(
   $("<td>").text(trainName),
@@ -90,7 +86,6 @@ var newRow = $("<tr>").append(
   $("<td>").text(trainFrequency),
   $("<td>").text(trainNext),
   $("<td>").text(trainMinutesAway),
-  $("<td>").html(deleteButton),
 );
     
 // Append the new row to the table

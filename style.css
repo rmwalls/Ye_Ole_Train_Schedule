@@ -1,0 +1,17 @@
+//Style to fix the issue of text extending past card length
+    .card-body a {
+      word-break: break-all;
+    }
+    .articleHeadline {
+      line-height: 1.5;
+    }
+  </style>
+
+  <style>
+    #schedule-table th,
+    td {
+      display: inline-block;
+      width: 16.575%;
+      text-align: center; 
+    }
+ 
