@@ -19,6 +19,15 @@ var trainFirstTime;
 var trainFrequency;
 var currentTime = moment().format('LT');
 var trainKey;
+var deleteButton = "<button type='button' class='btn btn-delete' id='key' onclick='trainDelete()'><span class='fas fa-times' aria-label='Delete'></span></button>";
+
+ function trainDelete() {
+   event.preventDefault();
+   var deleteKey = $(this).attr("id"); 
+   console.log("trainKey" + trainKey);  
+   database.ref(trainKey).remove();
+   location.reload();
+}; //end train delete 
 
 //add current local time to jumbotron
 $("#jumbo").append("<br> Local Time is " + currentTime);
@@ -60,32 +69,20 @@ document.getElementById("form").reset();
 }); //end database call  
  
 //get data back from database
-database.ref().on("child_added", function(childSnapshot) { //get existing data from database
+database.ref().on("child_added", function(childSnapshot) { 
   console.log(childSnapshot.val());
   trainKey = childSnapshot.key;
   console.log("train key = " + trainKey);
   
 
-  // Store from database back into variables.
+  // Store from database back into variables for the table.
   trainName = childSnapshot.val().name;
   trainDestination = childSnapshot.val().dest;
   var trainFirstTime = childSnapshot.val().ftime; 
   var trainFrequency = childSnapshot.val().frequency;
   var trainNext = childSnapshot.val().trainNext;
   var trainMinutesAway = childSnapshot.val().trainMinutesAway;
-
-  var deleteButton = "<button type='button'" + 
-		   "onclick='trainDelete(trainKey);' " + 
-		   "class='btn btn-delete'>" +  
-	           "<i class='fas fa-times' aria-label='Delete'>" +
-             "</i></button>";
-             
-  function trainDelete(trainKey) {
-    $(this).parents("tr").remove();
-    database.ref(trainKey).remove();
-    console.log("here is my delete function")
-  }
-            
+              
 
 // Create the new table row
 var newRow = $("<tr>").append(
@@ -100,3 +97,4 @@ var newRow = $("<tr>").append(
 // Append the new row to the table
 $("#schedule-table > tbody").append(newRow);
 }); // end add train
+
